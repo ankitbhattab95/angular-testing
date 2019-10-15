@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class OmdbService {
 
   
-  private omdbUrl = 'http://www.omdbapi.com/?apikey=a353b277&s=';  
+  omdbUrl = 'http://www.omdbapi.com/?apikey=a353b277&s=';  
   request:string;
   constructor(private http: HttpClient) { }
 
