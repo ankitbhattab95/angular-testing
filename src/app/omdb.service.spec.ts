@@ -32,8 +32,8 @@ describe('OmdbService', () => {
   });
 
 
-  describe('#getMovieDetails', () => {
-
+  describe('test suite for getDetails() of omdbService', () => {
+    
     let expectedDetails: any
     beforeEach(() => {
       omdbService = TestBed.get(OmdbService);
@@ -42,21 +42,58 @@ describe('OmdbService', () => {
       }
       
     });
-
+    
     it('should return expected movie details (called once)', () => {
-      omdbService.getDetails("tttt").subscribe(
-        data => console.log('asaasasa'),
+      let testMovieName= "batman"
+      omdbService.getDetails(testMovieName).subscribe(
+        // data => console.log('asaasasa'),
         data => expect(data).toEqual(expectedDetails)
       );
 
-      const req = httpTestingController.expectOne(omdbService.request);
+      const req = httpTestingController.expectOne('http://www.omdbapi.com/?apikey=a353b277&s='+testMovieName);
       expect(req.request.method).toEqual('GET');
 
       req.flush(expectedDetails);
     });
 
+
+    it('should be OK returning no matching movies', () => {
+      let testMovieName= "noMatchingMovieName"
+      let res = {"Response":"False","Error":"Movie not found!"}
+      
+      omdbService.getDetails(testMovieName).subscribe(
+        data => expect(data).toEqual(res),
+        fail
+      );
+
+      const req = httpTestingController.expectOne('http://www.omdbapi.com/?apikey=a353b277&s='+testMovieName);
+      req.flush(res); // Respond with no movies
+    });
     
    
+
+    it('should return expected movies (called multiple times)', () => {
+      let testMovieName= "noMatchingMovieName"
+      
+      omdbService.getDetails(testMovieName).subscribe();
+      omdbService.getDetails(testMovieName).subscribe();
+      
+      omdbService.getDetails(testMovieName).subscribe(
+        data => expect(data).toEqual(1),
+        fail
+      );
+
+      const requests = httpTestingController.match('http://www.omdbapi.com/?apikey=a353b277&s='+testMovieName);
+      expect(requests.length).toEqual(3);
+
+      // Respond to each request with different mock movie results
+      requests[0].flush([]);
+      requests[1].flush([{name: 'batman',year:'2005'}]);
+      requests[2].flush(1);
+    });
+
+
+
   });
 });
 
