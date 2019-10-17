@@ -1,23 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {HttpClientModule} from '@angular/common/http'
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
 import { OmdbService } from '../omdb.service'
 import { HomeComponent } from './home.component';
-import { Data } from '../data.mock';
-import { Observable } from 'rxjs';
+import { MockData } from '../data.mock';
 import { of } from 'rxjs';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
   let omdbService: OmdbService;
-  let httpTestingController: HttpTestingController;
 
    class MockOmdbService {
     getDetails (name): any{
-      console.log('from mock')
-      return ({ subscribe: () => {} })
-      // return of(Data.data);
+      return of(MockData.data);
     } 
   }
 
@@ -26,7 +21,6 @@ describe('HomeComponent', () => {
       declarations: [ HomeComponent ],
       imports: [
         HttpClientTestingModule,
-        // httpTestingController
       ],
       providers: [
         {provide: OmdbService, useClass: MockOmdbService }
@@ -41,15 +35,9 @@ describe('HomeComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     omdbService = TestBed.get(OmdbService);
-    // httpTestingController = TestBed.get(HttpTestingController);
-
   });
 
 
-  //  it('should create', () => {  
-  //        expect(component).toBeTruthy();
-  //     }); 
-    
 
   it('#getMovieDetails()', (done) => {
     
@@ -57,20 +45,19 @@ describe('HomeComponent', () => {
     const input = homeElement.querySelector('input');
     input.value="Batman"
     fixture.detectChanges();
-    const a =   component.getMovieDetails(input)
-      //  expect(input.value).toEqual("Batman");
- 
+    component.getMovieDetails(input)
+
     setTimeout(function() {
       jasmine.clock().install();
       fixture.detectChanges();
      
-      //check the data binding of movieName between the view and component
-      expect(component.movieName).toEqual(input.value);
+     
+      expect(component.movieName).toEqual(input.value);  //check the data binding of movieName between the view and component  
       
-      //check if movie details are fetched correctly
-      expect(a.title).toBe(component.details.title);
-      expect(a.Poster).toBe(component.details.Poster);
-      expect(a.year).toBe(component.details.year);
+     
+      expect(component.details.title).toBe(MockData.data.Search[0].Title);    //check if movie details are fetched correctly
+      expect(component.details.Poster).toBe(MockData.data.Search[0].Poster);
+      expect(component.details.year).toBe(MockData.data.Search[0].Year);
       
       done();
     }, 1000);

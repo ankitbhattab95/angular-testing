@@ -30,9 +30,9 @@ export class HomeComponent implements OnInit {
         this.details.year=data.Search[0].Year;
         this.details.Poster=data.Search[0].Poster;
         console.log("data")
-        console.log(data)
+        console.log(this.details.year)
     })
-    return  this.details
+    // return  this.details
     
   }
 
