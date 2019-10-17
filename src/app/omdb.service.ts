@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+// import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +16,9 @@ export class OmdbService {
 
 
   
-  getDetails (movieName){
+  getDetails (movieName):Observable<any>{
     this.request=this.omdbUrl+movieName;
-    return this.http.get<any>(this.request)
+    return (this.http.get<any>(this.request))
   }
 }
 

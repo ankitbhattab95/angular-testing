@@ -1,27 +1,38 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {HttpClientModule} from '@angular/common/http'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
 import { OmdbService } from '../omdb.service'
 import { HomeComponent } from './home.component';
-import { from } from 'rxjs';
+import { Data } from '../data.mock';
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
   let omdbService: OmdbService;
+  let httpTestingController: HttpTestingController;
+
+   class MockOmdbService {
+    getDetails (name): any{
+      console.log('from mock')
+      return ({ subscribe: () => {} })
+      // return of(Data.data);
+    } 
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ HomeComponent ],
       imports: [
-        HttpClientModule
+        HttpClientTestingModule,
+        // httpTestingController
       ],
       providers: [
-        // OmdbService,
+        {provide: OmdbService, useClass: MockOmdbService }
       ]
     })
     .compileComponents();
-    // omdbService = TestBed.get(OmdbService);
 
   }));
 
@@ -29,35 +40,41 @@ describe('HomeComponent', () => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    omdbService = TestBed.get(OmdbService);
+    // httpTestingController = TestBed.get(HttpTestingController);
+
   });
 
-  // it('should create', (done) => {  
-  //   // jasmine.DEFAULT_TIMEOUT_INTERVAL = 100;
-  //   expect(component).toBeTruthy();
-  //   // done()
-  // }); 
 
-  it('#getMovieDetails() ', (done) => {
-  const homeElement: HTMLElement = fixture.nativeElement;
-  const input = homeElement.querySelector('input');
+  //  it('should create', () => {  
+  //        expect(component).toBeTruthy();
+  //     }); 
+    
+
+  it('#getMovieDetails()', (done) => {
+    
+    const homeElement: HTMLElement = fixture.nativeElement;
+    const input = homeElement.querySelector('input');
     input.value="Batman"
     fixture.detectChanges();
-    const a=component.getMovieDetails(input)
-    // fixture.whenStable().then(() => {
-    // });
-    
+    const a =   component.getMovieDetails(input)
+      //  expect(input.value).toEqual("Batman");
+ 
     setTimeout(function() {
       jasmine.clock().install();
-      console.log("year="+component.year)
       fixture.detectChanges();
-      expect(component.year).toBeGreaterThanOrEqual(2005);
-      expect(component.title).toContain(input.value);
+     
+      //check the data binding of movieName between the view and component
+      expect(component.movieName).toEqual(input.value);
+      
+      //check if movie details are fetched correctly
+      expect(a.title).toBe(component.details.title);
+      expect(a.Poster).toBe(component.details.Poster);
+      expect(a.year).toBe(component.details.year);
+      
       done();
-    }, 2000);
-
-
-
-
-
+    }, 1000);
   });
+
+
 });

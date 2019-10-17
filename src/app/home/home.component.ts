@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OmdbService} from '../omdb.service';
-import { doesNotThrow } from 'assert';
-import { disconnect } from 'cluster';
+
 
 @Component({
   selector: 'app-home',
@@ -11,9 +10,13 @@ import { disconnect } from 'cluster';
 export class HomeComponent implements OnInit {
 
   constructor(private omdbService: OmdbService) { }
-  title:string;
-  Poster:string;
-  year:string;
+
+   movieName:string;
+  details={
+    title:"batman",
+    Poster:"placeholder",
+    year:"2005"
+  }
 
   ngOnInit() {
   }
@@ -23,19 +26,23 @@ export class HomeComponent implements OnInit {
   }
 
   getMovieDetails(event){
-    this.omdbService.getDetails(event.value)
+     this.movieName= event.value
+    console.log('inside getmoviedetails'+this.movieName)
+    this.omdbService.getDetails(this.movieName)
     .subscribe(data => {
       // if(data.Search !== undefined)
       if(true)
       {
-        this.title=data.Search[0].Title;
-        this.year=data.Search[0].Year;
-        this.Poster=data.Search[0].Poster;
-        console.log(this.year)
-        return this.year;
+        this.details.title=data.Search[0].Title;
+        this.details.year=data.Search[0].Year;
+        this.details.Poster=data.Search[0].Poster;
+        console.log("data")
+        console.log(data)
         
       }
     })
+    console.log("data2")
+    return  this.details
     
   }
 
