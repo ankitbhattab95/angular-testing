@@ -13,9 +13,9 @@ export class HomeComponent implements OnInit {
 
    movieName:string;
   details={
-    title:"batman",
-    Poster:"placeholder",
-    year:"2005"
+    title:undefined,
+    Poster:undefined,
+    year:undefined
   }
 
   ngOnInit() {

@@ -3,9 +3,9 @@
     <p> <input type="text" #local placeholder="batman"></p>
     <button class="btn btn-success" (click)="getMovieDetails(local)" >search</button>
 </div>
-    <div *ngIf='Poster!==undefined'>
-        <h2>Title: {{title}} </h2>
-        <img src="{{Poster}}" alt="" >
-        <h3>Year: {{year}}</h3>
+    <div *ngIf='details.Poster!==undefined'>
+        <h2>Title: {{details.title}} </h2>
+        <img src="{{details.Poster}}" alt="" >
+        <h3>Year: {{details.year}}</h3>
     </div>    
     <div *ngIf='Poster===undefined'> <h4>Movie details will be displayed here</h4> </div>
