@@ -21,27 +21,17 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
   }
 
-  dummy(){
-    return 200;
-  }
-
   getMovieDetails(event){
      this.movieName= event.value
     console.log('inside getmoviedetails'+this.movieName)
     this.omdbService.getDetails(this.movieName)
     .subscribe(data => {
-      // if(data.Search !== undefined)
-      if(true)
-      {
         this.details.title=data.Search[0].Title;
         this.details.year=data.Search[0].Year;
         this.details.Poster=data.Search[0].Poster;
         console.log("data")
         console.log(data)
-        
-      }
     })
-    console.log("data2")
     return  this.details
     
   }
